@@ -12,14 +12,17 @@ public class LineaPedido implements Serializable {
     private String unidad;
     private List<Integer> lineasPreparadas = new ArrayList<>();
 
+    private int cantidadActual;
+
     public LineaPedido(){}
-    public LineaPedido(int id, int cantidad, String tipoPaquete, boolean compleatada, String unidad, List<Integer> lineasPreapradas) {
+    public LineaPedido(int id, int cantidad, String tipoPaquete, boolean compleatada, String unidad, List<Integer> lineasPreapradas, int cantidadActual) {
         this.id = id;
         this.cantidad = cantidad;
         TipoPaquete = tipoPaquete;
         this.compleatada = compleatada;
         this.unidad = unidad;
         this.lineasPreparadas = lineasPreapradas;
+        this.cantidadActual = cantidadActual;
     }
 
     public boolean isCompleatada() {
@@ -68,5 +71,13 @@ public class LineaPedido implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getCantidadActual() {
+        return cantidadActual;
+    }
+
+    public void setCantidadActual(int cantidadActual) {
+        this.cantidadActual = cantidadActual;
     }
 }

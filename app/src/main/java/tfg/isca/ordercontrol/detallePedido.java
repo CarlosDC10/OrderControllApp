@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -24,9 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import tfg.isca.ordercontrol.Adapters.LineaPedidoAdapter;
-import tfg.isca.ordercontrol.Adapters.PedidoAdapter;
 import tfg.isca.ordercontrol.Pojos.LineaPedido;
-import tfg.isca.ordercontrol.Pojos.Pedido;
+import tfg.isca.ordercontrol.ipAddress.ip;
 
 public class detallePedido extends AppCompatActivity {
 
@@ -34,11 +34,13 @@ public class detallePedido extends AppCompatActivity {
     private LineaPedidoAdapter adapter;
     private GridView gridView;
     private TextView clienteYfecha, muelle, estado;
+    private boolean primero = true;
+    private ArrayList<Integer> idsLineas = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getSupportActionBar().hide();
         setContentView(R.layout.activity_detalle_pedido);
 
@@ -46,6 +48,10 @@ public class detallePedido extends AppCompatActivity {
         muelle = findViewById(R.id.muelle);
         estado = findViewById(R.id.estadoDetallePedido);
 
+        Object[] ListaIdLineas = (Object[]) getIntent().getSerializableExtra("ListaIdLineas");
+        for (int i = 0; i < ListaIdLineas.length; i++) {
+            idsLineas.add(Integer.valueOf(String.valueOf(ListaIdLineas[i])));
+        }
 
         gridView = findViewById(R.id.gridViewLineaPedido);
 
@@ -56,7 +62,7 @@ public class detallePedido extends AppCompatActivity {
         }*/
         getAllLineas();
 
-        clienteYfecha.setText(getIntent().getStringExtra("cliente")+" ("+getIntent().getStringExtra("fechaEntrega")+")");
+        clienteYfecha.setText(getIntent().getStringExtra("cliente") + " (" + getIntent().getStringExtra("fechaEntrega") + ")");
         muelle.setText(getIntent().getStringExtra("muelle"));
         estado.setText(getIntent().getStringExtra("estado"));
 
@@ -66,22 +72,19 @@ public class detallePedido extends AppCompatActivity {
                 LineaPedido cardItem = lineaPedidosCards.get(position);
                 Intent intent = new Intent(detallePedido.this, DetalleLineaPedido.class);
                 intent.putExtra("cantidad", cardItem.getCantidad());
+                intent.putExtra("cantidadActual", cardItem.getCantidadActual());
                 intent.putExtra("tipoPaquete", cardItem.getTipoPaquete());
                 intent.putExtra("completada", cardItem.isCompleatada());
-                intent.putExtra("lineasPreparada", cardItem.getLineasPreparadas().toArray());
+                intent.putExtra("lineasPreparadaIds", cardItem.getLineasPreparadas().toArray());
                 intent.putExtra("unidad", cardItem.getUnidad());
+                intent.putExtra("id", cardItem.getId());
                 startActivity(intent);
             }
         });
     }
 
     private void getAllLineas() {
-        ArrayList<Integer> ids = new ArrayList<>();
-        Object[] ListaIdLineas = (Object[]) getIntent().getSerializableExtra("ListaIdLineas");
-        for(int i = 0; i<ListaIdLineas.length;i++){
-            ids.add(Integer.valueOf(String.valueOf(ListaIdLineas[i])));
-        }
-        String url = "http://192.168.122.62:8069/app_pedidos/getLineaPedido";
+        String url = ip.IP + "/app_pedidos/getLineaPedido";
 
         StringRequest stringRequest = new StringRequest
                 (Request.Method.GET, url, new Response.Listener<String>() {
@@ -91,16 +94,16 @@ public class detallePedido extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray array = jsonObject.getJSONArray("data");
                             for (int i = 0; i < array.length(); i++) {
-                                JSONObject jsonPedido = array.getJSONObject(i);
-                                if (ids.contains(jsonPedido.getInt("id"))) {
-                                    LineaPedido linea = new LineaPedido(jsonPedido.getInt("id"),
-                                            jsonPedido.getInt("cantidad"),null,jsonPedido.getBoolean("completada"),
-                                            getIntent().getStringExtra("unidad"),null);
-                                    linea.setTipoPaquete(String.valueOf(((JSONArray) (jsonPedido.get("tipoPaquete"))).get(1)));
+                                JSONObject jsonLineaPedido = array.getJSONObject(i);
+                                if (idsLineas.contains(jsonLineaPedido.getInt("id"))) {
+                                    LineaPedido linea = new LineaPedido(jsonLineaPedido.getInt("id"),
+                                            jsonLineaPedido.getInt("cantidad"), null, jsonLineaPedido.getBoolean("completada"),
+                                            getIntent().getStringExtra("unidad"), null, jsonLineaPedido.getInt("cantidadActual"));
+                                    linea.setTipoPaquete(String.valueOf(((JSONArray) (jsonLineaPedido.get("tipoPaquete"))).get(1)));
 
                                     List<Integer> lineasPrep = new ArrayList<>();
-                                    for(int j = 0; j<((JSONArray)(jsonPedido.get("lineasPreparadas"))).length();j++){
-                                        lineasPrep.add(Integer.valueOf(((JSONArray)(jsonPedido.get("lineasPreparadas"))).get(j).toString()));
+                                    for (int j = 0; j < ((JSONArray) (jsonLineaPedido.get("lineasPreparadas"))).length(); j++) {
+                                        lineasPrep.add(Integer.valueOf(((JSONArray) (jsonLineaPedido.get("lineasPreparadas"))).get(j).toString()));
                                     }
                                     linea.setLineasPreparadas(lineasPrep);
 
@@ -117,10 +120,53 @@ public class detallePedido extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        Toast.makeText(detallePedido.this, "Algo ha ido mal", Toast.LENGTH_SHORT).show();
                     }
                 });
 
         Volley.newRequestQueue(detallePedido.this).add(stringRequest);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (primero) {
+            primero = false;
+        } else {
+            lineaPedidosCards = new ArrayList<>();
+            String url = ip.IP + "/app_pedidos/getPedido/" + getIntent().getIntExtra("id", 0);
+
+            StringRequest stringRequest = new StringRequest
+                    (Request.Method.GET, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                JSONArray array = jsonObject.getJSONArray("data");
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject jsonPedido = array.getJSONObject(i);
+
+                                    ArrayList<Integer> lineasPedido = new ArrayList<>();
+                                    for (int j = 0; j < ((JSONArray) (jsonPedido.get("lineas"))).length(); j++) {
+                                        lineasPedido.add(Integer.valueOf(((JSONArray) (jsonPedido.get("lineas"))).get(j).toString()));
+                                    }
+
+                                    idsLineas = lineasPedido;
+
+                                    getAllLineas();
+                                }
+                            } catch (JSONException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(detallePedido.this, "Algo ha ido mal actualizando la linea", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            Volley.newRequestQueue(detallePedido.this).add(stringRequest);
+        }
     }
 }

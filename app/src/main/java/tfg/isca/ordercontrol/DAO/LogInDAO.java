@@ -24,6 +24,8 @@ import java.util.concurrent.CountDownLatch;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import tfg.isca.ordercontrol.ipAddress.ip;
+
 public class LogInDAO {
     private String session_id = "";
 
@@ -35,7 +37,7 @@ public class LogInDAO {
         RequestQueue queue = Volley.newRequestQueue(context); // Pass your context here
 
         // Set the URL for the POST request
-        String url = "http://192.168.122.62:8069/web/session/authenticate";
+        String url = ip.IP+"/web/session/authenticate";
 
         JSONObject body = new JSONObject();
         try {

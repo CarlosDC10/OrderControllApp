@@ -27,6 +27,7 @@ import tfg.isca.ordercontrol.Adapters.PedidoAdapter;
 import tfg.isca.ordercontrol.Pojos.LineaPedido;
 import tfg.isca.ordercontrol.Pojos.LineaPreparada;
 import tfg.isca.ordercontrol.Pojos.Pedido;
+import tfg.isca.ordercontrol.ipAddress.ip;
 
 public class listaPedidos extends AppCompatActivity {
 
@@ -137,13 +138,14 @@ public class listaPedidos extends AppCompatActivity {
                 intent.putExtra("muelle", cardItem.getMuelle());
                 intent.putExtra("estado", cardItem.getEstado());
                 intent.putExtra("unidad", cardItem.getUnidad());
+                intent.putExtra("id",cardItem.getId());
                 startActivity(intent);
             }
         });
     }
 
     private void getAllPedidos() {
-        String url = "http://192.168.122.62:8069/app_pedidos/getPedido";
+        String url = ip.IP+"/app_pedidos/getPedido";
 
         StringRequest stringRequest = new StringRequest
                 (Request.Method.GET, url, new Response.Listener<String>() {
