@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -21,7 +22,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tfg.isca.ordercontrol.Adapters.PedidoAdapter;
 import tfg.isca.ordercontrol.Pojos.LineaPedido;
@@ -44,84 +47,6 @@ public class listaPedidos extends AppCompatActivity {
 
         pedidosCards = new ArrayList<Pedido>();
 
-        /*pedidosCards.add(new Pedido(
-                3, "Consum", "(10-05-2023)", "Puerta trasera", "En produccion", "caja(s)",
-                Arrays.asList(
-                        new LineaPedido(
-                                20, "400", false,
-                                "caja(s)", Arrays.asList(
-                                new LineaPreparada(
-                                        9, 119, "400", "cajas(s)"
-                                ),
-                                new LineaPreparada(
-                                        9, 120, "400", "cajas(s)"
-                                )
-                        )
-                        ), new LineaPedido(
-                                30, "240", false,
-                                "caja(s)", Arrays.asList(
-                                new LineaPreparada(
-                                        10, 119, "240", "cajas(s)"
-                                ),
-                                new LineaPreparada(
-                                        9, 120, "240", "cajas(s)"
-                                )
-                        )
-                        )
-                )
-        ));
-        pedidosCards.add(new Pedido(
-                2, "Ricardo", "(12-05-2023)", "Puerta delantera", "En produccion", "caja(s)",
-                Arrays.asList(
-                        new LineaPedido(
-                                20, "400", false,
-                                "caja(s)", Arrays.asList(
-                                new LineaPreparada(
-                                        9, 119, "400", "cajas(s)"
-                                ),
-                                new LineaPreparada(
-                                        9, 120, "400", "cajas(s)"
-                                )
-                        )
-                        ), new LineaPedido(
-                                30, "240", false,
-                                "caja(s)", Arrays.asList(
-                                new LineaPreparada(
-                                        10, 119, "240", "cajas(s)"
-                                ),
-                                new LineaPreparada(
-                                        9, 120, "240", "cajas(s)"
-                                )
-                        )
-                        )
-                )
-        ));
-        pedidosCards.add(new Pedido(
-                1, "ValenFoods", "(15-05-2023)", "Puerta delantera", "En produccion", "caja(s)",
-                Arrays.asList(
-                        new LineaPedido(
-                                20, "400", false,
-                                "caja(s)", Arrays.asList(
-                                new LineaPreparada(
-                                        9, 119, "400", "cajas(s)"
-                                ),
-                                new LineaPreparada(
-                                        9, 120, "400", "cajas(s)"
-                                )
-                        )
-                        ), new LineaPedido(
-                                30, "240", false,
-                                "caja(s)", Arrays.asList(
-                                new LineaPreparada(
-                                        10, 119, "240", "cajas(s)"
-                                ),
-                                new LineaPreparada(
-                                        9, 120, "240", "cajas(s)"
-                                )
-                        )
-                        )
-                )
-        ));*/
         getAllPedidos();
         System.out.println(pedidosCards);
 

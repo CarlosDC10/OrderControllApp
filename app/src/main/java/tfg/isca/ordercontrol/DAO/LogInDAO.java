@@ -74,7 +74,9 @@ public class LogInDAO {
                 Map<String, String> headers = response.headers;
                 String cookies = headers.get("Set-Cookie");
                 String[] sesion = cookies.split(";");
-                session_id = sesion[0].substring(11);
+                String[] sessionDivided = sesion[0].split("=");
+                if(sessionDivided[0].equals("session_id"))
+                session_id = sessionDivided[1];
                 latch.countDown();
 
                 // Pass the response data to the super class for further processing

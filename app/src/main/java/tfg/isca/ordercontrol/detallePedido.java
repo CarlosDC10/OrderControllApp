@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,7 +23,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import tfg.isca.ordercontrol.Adapters.LineaPedidoAdapter;
 import tfg.isca.ordercontrol.Pojos.LineaPedido;
@@ -78,6 +82,7 @@ public class detallePedido extends AppCompatActivity {
                 intent.putExtra("lineasPreparadaIds", cardItem.getLineasPreparadas().toArray());
                 intent.putExtra("unidad", cardItem.getUnidad());
                 intent.putExtra("id", cardItem.getId());
+                intent.putExtra("session_id", getIntent().getStringExtra("session_id"));
                 startActivity(intent);
             }
         });
@@ -122,7 +127,18 @@ public class detallePedido extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(detallePedido.this, "Algo ha ido mal", Toast.LENGTH_SHORT).show();
                     }
-                });
+                }) /*{
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = super.getHeaders();
+                if (headers == null || headers.isEmpty()) {
+                    headers = new HashMap<>();
+                }
+                headers.put("Cookie", "session_id=" + getIntent().getStringExtra("session_id"));
+                return headers;
+            }
+        }*/;
+
 
         Volley.newRequestQueue(detallePedido.this).add(stringRequest);
     }

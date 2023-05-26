@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Usuario o contraseña incorrecta", Toast.LENGTH_SHORT).show();
                 }else {
                     Intent intent = new Intent(MainActivity.this, listaPedidos.class);
+                    intent.putExtra("session_id",login.getSession_id());
                     startActivity(intent);
                 }
             }

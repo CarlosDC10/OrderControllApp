@@ -33,9 +33,7 @@ public class AddLineaPreparada extends AppCompatActivity {
     TextView cantidadNumber, loteNumber;
     Button anyadirCantidad, restarCantidad, anyadirLote, restarLote, guardar;
 
-    static boolean fin = false;
-
-    int cantidadActual;
+    int cantidadActual, id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +45,7 @@ public class AddLineaPreparada extends AppCompatActivity {
         loteNumber = findViewById(R.id.loteNumber);
 
         cantidadActual = getIntent().getIntExtra("cantidadActual", 0);
+        id = getIntent().getIntExtra("idLineaPreparada", 0);
 
         anyadirCantidad = findViewById(R.id.anyadirCantidad);
         anyadirCantidad.setOnClickListener(new View.OnClickListener() {
@@ -54,7 +53,7 @@ public class AddLineaPreparada extends AppCompatActivity {
             public void onClick(View view) {
                 int cantidad = Integer.parseInt(cantidadNumber.getText().toString());
                 cantidad++;
-                if ((cantidadActual + cantidad) <= getIntent().getIntExtra("cantidadMax", 9999)) {
+                if ((cantidadActual + (cantidad-getIntent().getIntExtra("cantidad",0))) <= getIntent().getIntExtra("cantidadMax", 9999)) {
                     cantidadNumber.setText(String.valueOf(cantidad));
                 } else {
                     Toast.makeText(AddLineaPreparada.this, "Cantidad superior a la permitida", Toast.LENGTH_SHORT).show();
@@ -194,6 +193,83 @@ public class AddLineaPreparada extends AppCompatActivity {
                     try {
                         body.put("id", getIntent().getIntExtra("idLineaPedido", 0));
                         body.put("cantidadActual",(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString())));
+                        if(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString()) == getIntent().getIntExtra("cantidadMax",0)){
+                            body.put("completada",true);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return body.toString().getBytes();
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/json";
+                }
+
+            };
+
+            Volley.newRequestQueue(this).add(request2);
+        }else{
+            String url = ip.IP + "/app_pedidos/updateLineaPreparada";
+            StringRequest request = new StringRequest(Request.Method.PUT, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // Handle the error response
+                            Toast.makeText(AddLineaPreparada.this, "Algo ha ido mal actualizando la lineaprep", Toast.LENGTH_SHORT).show();
+                            //System.out.println(error);
+                        }
+                    }) {
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    JSONObject body = new JSONObject();
+                    try {
+                        body.put("id", id);
+                        body.put("lote", Integer.parseInt(loteNumber.getText().toString()));
+                        body.put("cantidad", Integer.parseInt(cantidadNumber.getText().toString()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return body.toString().getBytes();
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/json";
+                }
+
+            };
+
+            Volley.newRequestQueue(AddLineaPreparada.this).add(request);
+
+            String url2 = ip.IP + "/app_pedidos/updateLineaPedido";
+            StringRequest request2 = new StringRequest(Request.Method.PUT, url2,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(AddLineaPreparada.this, "Actualizada", Toast.LENGTH_SHORT).show();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            // Handle the error response
+                            Toast.makeText(AddLineaPreparada.this, "Algo ha ido mal actualizando la linea", Toast.LENGTH_SHORT).show();
+                            //System.out.println(error);
+                        }
+                    }) {
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    JSONObject body = new JSONObject();
+                    try {
+                        body.put("id", getIntent().getIntExtra("idLineaPedido", 0));
+                        body.put("cantidadActual",(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString())-getIntent().getIntExtra("cantidad",0)));
                         if(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString()) == getIntent().getIntExtra("cantidadMax",0)){
                             body.put("completada",true);
                         }

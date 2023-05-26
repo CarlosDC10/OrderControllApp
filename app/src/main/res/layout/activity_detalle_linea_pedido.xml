@@ -51,6 +51,20 @@
         app:layout_constraintVertical_bias="0.402" />
 
     <TextView
+        android:id="@+id/cantidadActual"
+        android:layout_width="464dp"
+        android:layout_height="72dp"
+        android:textColor="#000000"
+        android:textSize="45sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.532"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.401" />
+
+    <TextView
         android:id="@+id/lineaPedido"
         android:layout_width="912dp"
         android:layout_height="78dp"
@@ -59,15 +73,15 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.269"
+        app:layout_constraintHorizontal_bias="0.192"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.263" />
+        app:layout_constraintVertical_bias="0.256" />
 
     <GridView
         android:id="@+id/gridViewLineaPreparada"
-        android:layout_width="1277dp"
-        android:layout_height="393dp"
+        android:layout_width="1250dp"
+        android:layout_height="398dp"
         android:numColumns="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -35,7 +35,7 @@ public class DetalleLineaPedido extends AppCompatActivity {
     private ArrayList<LineaPreparada> lineaPreparadaCards;
     private LineaPreparadaAdapter adapter;
     private GridView gridView;
-    private TextView lineaPedido, estado;
+    private TextView lineaPedido, estado, cantidadActualText;
     public ArrayList<Integer> ids = new ArrayList<>();
     private boolean primero = true, editable;
     public int cantidadActual = 0;
@@ -51,6 +51,7 @@ public class DetalleLineaPedido extends AppCompatActivity {
 
         lineaPedido = findViewById(R.id.lineaPedido);
         estado = findViewById(R.id.estadoLineaPreparada);
+        cantidadActualText = findViewById(R.id.cantidadActual);
 
         gridView = findViewById(R.id.gridViewLineaPreparada);
 
@@ -65,8 +66,8 @@ public class DetalleLineaPedido extends AppCompatActivity {
 
         lineaPreparadaCards = new ArrayList<>();
 
-        //lineaPedido.setText(lineaPadre.getCantidad() + " " + lineaPadre.getUnidad() + " de " + lineaPadre.getTipoPaquete());
-        lineaPedido.setText(" Cantidad actual: " + lineaPadre.getCantidadActual());
+        lineaPedido.setText(lineaPadre.getCantidad() + " " + lineaPadre.getUnidad() + " de " + lineaPadre.getTipoPaquete());
+        cantidadActualText.setText(" Cantidad actual: " + lineaPadre.getCantidadActual());
         if (lineaPadre.isCompleatada()) {
             estado.setText("Completada");
             editable = false;
@@ -86,7 +87,10 @@ public class DetalleLineaPedido extends AppCompatActivity {
 
                     if (cardItem.getCantidad() != 0) {
                         intent.putExtra("cantidad", cardItem.getCantidad());
+                        intent.putExtra("nuevo", false);
+                    } else {
                         intent.putExtra("nuevo", true);
+
                     }
                     intent.putExtra("tipoPaquete", cardItem.getTipoPaquete());
                     intent.putExtra("idTipoPaquete", cardItem.getIdTipoPaquete());
@@ -96,10 +100,11 @@ public class DetalleLineaPedido extends AppCompatActivity {
                     intent.putExtra("unidad", cardItem.getUnidad());
                     intent.putExtra("cantidadMax", getIntent().getIntExtra("cantidad", 9999));
                     intent.putExtra("cantidadActual", cantidadActual);
+                    intent.putExtra("idLineaPreparada",cardItem.getId());
                     intent.putExtra("idsOtrasLineas", getIntent().getSerializableExtra("lineasPreparadaIds"));
 
                     startActivity(intent);
-                }else{
+                } else {
                     Toast.makeText(DetalleLineaPedido.this, "Linea completada", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -178,8 +183,8 @@ public class DetalleLineaPedido extends AppCompatActivity {
                                     cantidadActual = jsonLineaPedido.getInt("cantidadActual");
                                     lineaPadre = linea;
 
-                                    //lineaPedido.setText(lineaPadre.getCantidad() + " " + lineaPadre.getUnidad() + " de " + lineaPadre.getTipoPaquete());
-                                    lineaPedido.setText(" Cantidad actual: " + lineaPadre.getCantidadActual());
+                                    lineaPedido.setText(lineaPadre.getCantidad() + " " + lineaPadre.getUnidad() + " de " + lineaPadre.getTipoPaquete());
+                                    cantidadActualText.setText(" Cantidad actual: " + lineaPadre.getCantidadActual());
                                     if (lineaPadre.isCompleatada()) {
                                         estado.setText("Completada");
                                         editable = false;
