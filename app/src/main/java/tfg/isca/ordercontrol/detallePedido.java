@@ -60,10 +60,6 @@ public class detallePedido extends AppCompatActivity {
         gridView = findViewById(R.id.gridViewLineaPedido);
 
         lineaPedidosCards = new ArrayList<>();
-        /*LineaPedido[] provisional = (LineaPedido[]) getIntent().getSerializableExtra("lineasPedido");
-        for(LineaPedido linea : provisional){
-            lineaPedidosCards.add(linea);
-        }*/
         getAllLineas();
 
         clienteYfecha.setText(getIntent().getStringExtra("cliente") + " (" + getIntent().getStringExtra("fechaEntrega") + ")");
@@ -165,6 +161,11 @@ public class detallePedido extends AppCompatActivity {
                                     ArrayList<Integer> lineasPedido = new ArrayList<>();
                                     for (int j = 0; j < ((JSONArray) (jsonPedido.get("lineas"))).length(); j++) {
                                         lineasPedido.add(Integer.valueOf(((JSONArray) (jsonPedido.get("lineas"))).get(j).toString()));
+                                    }
+                                    if(jsonPedido.get("estado").toString().equals("P")){
+                                        estado.setText("En producción");
+                                    }else if(jsonPedido.get("estado").toString().equals("C")){
+                                        estado.setText("Completada");
                                     }
 
                                     idsLineas = lineasPedido;

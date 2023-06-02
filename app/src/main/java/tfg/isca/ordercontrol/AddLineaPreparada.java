@@ -53,7 +53,8 @@ public class AddLineaPreparada extends AppCompatActivity {
             public void onClick(View view) {
                 int cantidad = Integer.parseInt(cantidadNumber.getText().toString());
                 cantidad++;
-                if ((cantidadActual + (cantidad-getIntent().getIntExtra("cantidad",0))) <= getIntent().getIntExtra("cantidadMax", 9999)) {
+                if ((cantidadActual + (cantidad-getIntent().getIntExtra("cantidad",0)))
+                        <= getIntent().getIntExtra("cantidadMax", 9999)) {
                     cantidadNumber.setText(String.valueOf(cantidad));
                 } else {
                     Toast.makeText(AddLineaPreparada.this, "Cantidad superior a la permitida", Toast.LENGTH_SHORT).show();
@@ -190,10 +191,13 @@ public class AddLineaPreparada extends AppCompatActivity {
                 @Override
                 public byte[] getBody() throws AuthFailureError {
                     JSONObject body = new JSONObject();
+                    int cantActual = getIntent().getIntExtra("cantidadActual", 9999);
+                    int numberImput = Integer.parseInt(cantidadNumber.getText().toString());
+                    int cantidadMax = getIntent().getIntExtra("cantidadMax",0);
                     try {
                         body.put("id", getIntent().getIntExtra("idLineaPedido", 0));
-                        body.put("cantidadActual",(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString())));
-                        if(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString()) == getIntent().getIntExtra("cantidadMax",0)){
+                        body.put("cantidadActual", (cantActual+numberImput));
+                        if((cantActual+numberImput) == cantidadMax){
                             body.put("completada",true);
                         }
                     } catch (JSONException e) {
@@ -267,10 +271,13 @@ public class AddLineaPreparada extends AppCompatActivity {
                 @Override
                 public byte[] getBody() throws AuthFailureError {
                     JSONObject body = new JSONObject();
+                    int cantActual = getIntent().getIntExtra("cantidadActual", 9999);
+                    int numberImput = Integer.parseInt(cantidadNumber.getText().toString());
+                    int cantidadMax = getIntent().getIntExtra("cantidadMax",0);
                     try {
                         body.put("id", getIntent().getIntExtra("idLineaPedido", 0));
-                        body.put("cantidadActual",(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString())-getIntent().getIntExtra("cantidad",0)));
-                        if(getIntent().getIntExtra("cantidadActual", 9999)+Integer.parseInt(cantidadNumber.getText().toString()) == getIntent().getIntExtra("cantidadMax",0)){
+                        body.put("cantidadActual",(cantActual+numberImput)-getIntent().getIntExtra("cantidad",0));
+                        if((cantActual+numberImput)-getIntent().getIntExtra("cantidad",0) == cantidadMax){
                             body.put("completada",true);
                         }
                     } catch (JSONException e) {

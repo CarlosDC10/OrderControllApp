@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import tfg.isca.ordercontrol.Adapters.PedidoAdapter;
+import tfg.isca.ordercontrol.DAO.LogInDAO;
 import tfg.isca.ordercontrol.Pojos.LineaPedido;
 import tfg.isca.ordercontrol.Pojos.LineaPreparada;
 import tfg.isca.ordercontrol.Pojos.Pedido;
@@ -48,7 +49,6 @@ public class listaPedidos extends AppCompatActivity {
         pedidosCards = new ArrayList<Pedido>();
 
         getAllPedidos();
-        System.out.println(pedidosCards);
 
         gridView = findViewById(R.id.gridView);
 
@@ -83,13 +83,19 @@ public class listaPedidos extends AppCompatActivity {
                                 JSONObject jsonPedido = array.getJSONObject(i);
                                 if (jsonPedido.getString("estado").equals("P")) {
                                     Pedido pedido = new Pedido(jsonPedido.getInt("id"), null,
-                                            jsonPedido.getString("fechaEntrega"), null, "En produccion", null, null);
+                                            jsonPedido.getString("fechaEntrega"), null, null, null, null);
                                     pedido.setCliente(String.valueOf(((JSONArray) (jsonPedido.get("cliente"))).get(1)));
                                     List<Integer> lineas = new ArrayList<>();
                                     for(int j = 0; j<((JSONArray)(jsonPedido.get("lineas"))).length();j++){
                                         lineas.add(Integer.valueOf(((JSONArray)(jsonPedido.get("lineas"))).get(j).toString()));
                                     }
                                     pedido.setLineasPedido(lineas);
+
+                                    if(jsonPedido.get("estado").toString().equals("P")){
+                                        pedido.setEstado("En producción");
+                                    }else if(jsonPedido.get("estado").toString().equals("C")){
+                                        pedido.setEstado("Completada");
+                                    }
 
                                     if (jsonPedido.getString("muelle").equals("P")) {
                                         pedido.setMuelle("Puerta principal");

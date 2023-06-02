@@ -11,7 +11,6 @@ public class LineaPedido implements Serializable {
     private boolean compleatada;
     private String unidad;
     private List<Integer> lineasPreparadas = new ArrayList<>();
-
     private int cantidadActual;
 
     public LineaPedido(){}

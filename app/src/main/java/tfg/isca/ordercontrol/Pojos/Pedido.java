@@ -10,8 +10,7 @@ public class Pedido {
     private String muelle;
     private String estado;
     private String unidad;
-
-    private List<Integer> lineasPedido = new ArrayList<>();
+    private List<Integer> lineasPedido;
 
     public Pedido(int id, String cliente, String fechaEntrega, String muelle, String estado, String unidad, List<Integer> lineas){
         this.id = id;
